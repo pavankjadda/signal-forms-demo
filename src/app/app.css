@@ -1,0 +1,27 @@
+/* CSS for the form */
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+input {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+button {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #ccc;
+  color: #fff;
+  background-color: #000;
+}
+
+.error {
+  color: red;
+}
