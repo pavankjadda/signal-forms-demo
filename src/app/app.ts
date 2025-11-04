@@ -1,30 +1,50 @@
 import { Component, signal } from '@angular/core';
-import { email, Field, form, required, submit } from '@angular/forms/signals';
+import { apply, email, Field, form, required, schema, submit } from '@angular/forms/signals';
 import { RouterOutlet } from '@angular/router';
+import { Address, AddressModel, addressSchema } from './address/address';
+
+export interface UserModel {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  age: number;
+  address: AddressModel;
+}
+
+export const userSchema = schema<UserModel>((fieldPath) => {
+  required(fieldPath.firstName, { message: 'First name is required' });
+  required(fieldPath.lastName, { message: 'Last name is required' });
+  required(fieldPath.email, { message: 'Email is required' });
+  email(fieldPath.email, { message: 'Email must be a valid email address' });
+  required(fieldPath.phone, { message: 'Phone is required' });
+  required(fieldPath.age, { message: 'Age is required' });
+  // apply child schema for identity checks
+  apply(fieldPath.address, addressSchema);
+});
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Field],
+  imports: [RouterOutlet, Field, Address],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
-  userModel = signal({
+  userModel = signal<UserModel>({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
     age: 0,
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      zip: '',
+    },
   });
 
-  userForm = form(this.userModel, (p) => {
-    required(p.firstName, { message: 'First name is required' });
-    required(p.lastName, { message: 'Last name is required' });
-    required(p.email, { message: 'Email is required' });
-    email(p.email, { message: 'Email must be a valid email address' });
-    required(p.phone, { message: 'Phone is required' });
-    required(p.age, { message: 'Age is required' });
-  });
+  userForm = form(this.userModel, userSchema);
 
   onSubmit(event: Event) {
     event.preventDefault();
